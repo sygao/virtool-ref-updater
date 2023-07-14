@@ -1,65 +1,48 @@
 name: "Update Virtool Reference"
-description: "Updates a reference"
+description: "Updates a Virtool reference repository in-pace using the official CLI tool"
 inputs:
   owner:
-    description: 'Owner of the reference repository'
+    description: 'Owner of the reference repository to be updated'
     required: true
+    default: ${{ github.repository_owner }}
   repository:
-    description: 'Name of the reference repository'
+    description: 'Slug of the reference repository to be updated'
     required: true
-  create-branch:
-    description: 'Commit updates to a new branch instead of main'
-    default: false
-  auto-pull:
-    description: 'Send a pull request to the official branch automatically'
-    default: false
-outputs:
+    default: ${{ github.repository_name }}
+  ref:
+    description: 'Branch/Reference to be checked out and updated'
+    required: true
+    default: 'main'
+  token:
+    description: Personal access token (PAT) used to run the repository
+    required: false
+    default: ${{ github.token }}
 
 runs:
   using: "composite"
   steps:
     - name: Check out repo
       uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.repository }}
+        token: ${{ inputs.token }}
+        ref: ${{ inputs.ref }}
 
     - name: Install virtool-cli
       run: |
         git config --global --add safe.directory $PWD
         git status
         pip install virtool-cli
+      shell: bash
     
     - name: Get isolates
       run: |
         virtool ref taxid -src src
         virtool ref repair -src src
         virtool ref isolate -src src
+      shell: bash
 
-    - name: Set date for branch naming
-      run: |
-        branch_date=$(date +"%Y-%m-%d")
-        branch_prefix="candidate--"
-        branch_name=$branch_prefix$branch_date
-        echo $branch_name
-        echo "BRANCH_NAME=$branch_name" >> ${GITHUB_ENV}
-
-    # - name: Commit to new branch
-    #   uses: stefanzweifel/git-auto-commit-action@v4
-    #   with:
-    #     branch: ${{ env.BRANCH_NAME }}
-    #     commit_message: Automated virtool-cli isolate retrieval on the database
-    #     create_branch: true
-
-    # - name: Make pull request to main branch
-    #   uses: actions/github-script@v6
-    #   env:
-    #     BRANCH_NAME: ${{ env.BRANCH_NAME }}
-    #   with:
-    #     github-token: ${{ secrets.GH_PAT }}
-    #     script: |
-    #       const { BRANCH_NAME } = process.env
-    #       github.rest.pulls.create({
-    #         owner: context.repo.owner,
-    #         repo: context.repo.repo,
-    #         head: BRANCH_NAME,
-    #         base: "main",
-    #         title: BRANCH_NAME
-    #       })
+    - name: Commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Automated virtool-cli isolate retrieval on the database

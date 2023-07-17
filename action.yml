@@ -2,32 +2,32 @@ name: "Update Virtool Reference"
 description: "Updates a Virtool reference repository in-place using the official CLI tool"
 inputs:
   owner:
-    description: 'Owner of the reference repository to be updated'
+    description: "Owner of the reference repository to be updated"
     required: true
     default: ${{ github.repository_owner }}
   repository:
-    description: 'Slug of the reference repository to be updated'
+    description: "'owner/repository_name' of the reference repository to be updated"
     required: true
     default: ${{ github.repository_name }}
   ref:
-    description: 'Branch/Reference to be checked out and updated'
+    description: "Branch/Reference to be checked out and updated"
     required: true
     default: 'main'
   token:
-    description: Personal access token (PAT) used to run the repository
+    description: "Personal access token used to access the repository"
     required: false
     default: ${{ github.token }}
-  new-branch:
-    description: Commit updates to a new branch
+  create-new-branch:
+    description: "Create a new branch and commit updates to it"
     required: false
     default: false
   new-branch-name:
-    description: Name for a new branch
+    description: "Give a name to a new branch"
     required: false
     default: 'new-accessions'
 outputs:
   active-branch: 
-    description: 'Name of committed branch'
+    description: "Name of branch committed to"
     value: ${{ steps.branch-name.outputs.active_branch }}
 
 runs:

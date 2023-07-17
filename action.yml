@@ -58,10 +58,10 @@ runs:
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Automated virtool-cli isolate retrieval on the database
-      if: ${{ inputs.new-branch == 'false' }}
+      if: ${{ inputs.create-new-branch == 'false' }}
     
     - name: Set old branch name
-      if: ${{ inputs.new-branch == 'false' }}
+      if: ${{ inputs.create-new-branch == 'false' }}
       run: |
         echo $branch_name
         echo "BRANCH_NAME=$ref" >> ${GITHUB_ENV}
@@ -70,7 +70,7 @@ runs:
       shell: bash
     
     - name: Set branch name
-      if: ${{ inputs.new-branch == 'true' }}
+      if: ${{ inputs.create-new-branch == 'true' }}
       run: |
         echo $branch_name
         echo "BRANCH_NAME=$new_name" >> ${GITHUB_ENV}
@@ -83,7 +83,7 @@ runs:
         branch: ${{ env.BRANCH_NAME }}
         create_branch: true
         commit_message: Automated virtool-cli isolate retrieval on the database
-      if: ${{ inputs.new-branch == 'true' }}
+      if: ${{ inputs.create-new-branch == 'true' }}
 
     - run: echo "active_branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
       id: branch-name

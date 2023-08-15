@@ -3,30 +3,28 @@ description: "Updates a Virtool reference repository in-place using the official
 
 inputs:
   
-  source:
-    owner:
-      description: "Owner of the reference repository to be updated"
-      required: true
-      default: ${{ github.repository_owner }}
-    repo:
-      description: "'owner/repository_name' of the reference repository to be updated"
-      required: true
-      default: ${{ github.repository_name }}
-    ref:
-      description: "Branch/Reference to be checked out and updated"
-      required: true
-      default: 'main'
-    token:
-      description: "Personal access token used to access the repository"
-      required: false
-      default: ${{ github.token }}
+  source-owner:
+    description: "Owner of the reference repository to be updated"
+    required: true
+    default: ${{ github.repository_owner }}
+  source-repo:
+    description: "'owner/repository_name' of the reference repository to be updated"
+    required: true
+    default: ${{ github.repository_name }}
+  source-ref:
+    description: "Branch/Reference to be checked out and updated"
+    required: true
+    default: 'main'
+  source-token:
+    description: "Personal access token used to access the repository"
+    required: false
+    default: ${{ github.token }}
 
-  catalog:
-    repo:
+  catalog-repo:
       description: "'owner/repository_name' of the catalog"
       required: true
       default: 'sygao/ref-accession-catalog'
-    token:
+  catalog-token:
       description: "Personal access token used to access the repository"
       required: false
       default: ${{ github.token }}

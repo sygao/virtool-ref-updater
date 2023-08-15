@@ -59,12 +59,13 @@ runs:
       with:
         repository: ${{ inputs.catalog-repo }}
         token: ${{ inputs.catalog-token }}
+        path: .cache
     
     - run: ls -l
       shell: bash
 
     - name: Get isolates
-      run: virtool ref update -src src -cat catalog 
+      run: virtool ref update -src src -cat .cache/catalog
          
       shell: bash
 

@@ -18,7 +18,7 @@ inputs:
   source-token:
     description: "Personal access token used to access the repository"
     required: false
-    default: ${{ github.token }}
+    default: ''
 
   catalog-repo:
       description: "'owner/repository_name' of the catalog"
@@ -27,7 +27,7 @@ inputs:
   catalog-token:
       description: "Personal access token used to access the repository"
       required: false
-      default: ${{ github.token }}
+      default: ''
   
   create-new-branch:
     description: "Create a new branch and commit updates to it"
@@ -50,15 +50,15 @@ runs:
     - name: Check out repo
       uses: actions/checkout@v3
       with:
-        repository: ${{ inputs.source.repo }}
-        token: ${{ inputs.source.token }}
-        ref: ${{ inputs.source.ref }}
+        repository: ${{ inputs.source-repo }}
+        token: ${{ inputs.source-token }}
+        ref: ${{ inputs.source-ref }}
 
     - name: Check out catalog
       uses: actions/checkout@v3
       with:
-        repository: ${{ inputs.catalog.repo }}
-        token: ${{ inputs.catalog.token }}
+        repository: ${{ inputs.catalog-repo }}
+        token: ${{ inputs.catalog-token }}
     
     - name: Get isolates
       run: virtool ref update -src src -cat 
@@ -75,7 +75,7 @@ runs:
         echo $branch_name
         echo "BRANCH_NAME=$ref" >> ${GITHUB_ENV}
       env:
-        ref: ${{ inputs.source.ref }}
+        ref: ${{ inputs.source-ref }}
       shell: bash
     
     - name: Set branch name

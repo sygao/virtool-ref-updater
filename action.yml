@@ -2,22 +2,35 @@ name: "Update Virtool Reference"
 description: "Updates a Virtool reference repository in-place using the official CLI tool"
 
 inputs:
-  owner:
-    description: "Owner of the reference repository to be updated"
-    required: true
-    default: ${{ github.repository_owner }}
-  repository:
-    description: "'owner/repository_name' of the reference repository to be updated"
-    required: true
-    default: ${{ github.repository_name }}
-  ref:
-    description: "Branch/Reference to be checked out and updated"
-    required: true
-    default: 'main'
-  token:
-    description: "Personal access token used to access the repository"
-    required: false
-    default: ${{ github.token }}
+  
+  source:
+    owner:
+      description: "Owner of the reference repository to be updated"
+      required: true
+      default: ${{ github.repository_owner }}
+    repo:
+      description: "'owner/repository_name' of the reference repository to be updated"
+      required: true
+      default: ${{ github.repository_name }}
+    ref:
+      description: "Branch/Reference to be checked out and updated"
+      required: true
+      default: 'main'
+    token:
+      description: "Personal access token used to access the repository"
+      required: false
+      default: ${{ github.token }}
+
+  catalog:
+    repo:
+      description: "'owner/repository_name' of the catalog"
+      required: true
+      default: 'sygao/ref-accession-catalog'
+    token:
+      description: "Personal access token used to access the repository"
+      required: false
+      default: ${{ github.token }}
+  
   create-new-branch:
     description: "Create a new branch and commit updates to it"
     required: false
@@ -39,23 +52,18 @@ runs:
     - name: Check out repo
       uses: actions/checkout@v3
       with:
-        repository: ${{ inputs.repository }}
-        token: ${{ inputs.token }}
-        ref: ${{ inputs.ref }}
+        repository: ${{ inputs.source.repo }}
+        token: ${{ inputs.source.token }}
+        ref: ${{ inputs.source.ref }}
 
-    - name: Install virtool-cli
-      run: |
-        git config --global --add safe.directory $PWD
-        git status
-        pip install virtool-cli
-      shell: bash
+    - name: Check out catalog
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.catalog.repo }}
+        token: ${{ inputs.catalog.token }}
     
     - name: Get isolates
-      run: |
-        virtool ref taxid -src src
-        virtool ref repair -src src
-        virtool ref isolate -src src
-      shell: bash
+      run: virtool ref update -src src -cat 
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
@@ -68,7 +76,7 @@ runs:
         echo $branch_name
         echo "BRANCH_NAME=$ref" >> ${GITHUB_ENV}
       env:
-        ref: ${{ inputs.ref }}
+        ref: ${{ inputs.source.ref }}
       shell: bash
     
     - name: Set branch name

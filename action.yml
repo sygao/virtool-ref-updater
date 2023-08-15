@@ -1,5 +1,6 @@
 name: "Update Virtool Reference"
 description: "Updates a Virtool reference repository in-place using the official CLI tool"
+
 inputs:
   owner:
     description: "Owner of the reference repository to be updated"
@@ -25,6 +26,7 @@ inputs:
     description: "Give a name to a new branch"
     required: false
     default: 'new-accessions'
+
 outputs:
   active-branch: 
     description: "Name of branch committed to"

@@ -61,7 +61,7 @@ runs:
         token: ${{ inputs.catalog-token }}
         path: .cache
     
-    - run: ls -l
+    - run: ls -la
       shell: bash
 
     - name: Get isolates

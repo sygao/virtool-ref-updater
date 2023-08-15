@@ -62,6 +62,7 @@ runs:
     
     - name: Get isolates
       run: virtool ref update -src src -cat 
+      shell: bash
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:

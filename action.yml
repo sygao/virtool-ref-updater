@@ -61,11 +61,11 @@ runs:
         token: ${{ inputs.catalog-token }}
         path: .cache
     
-    - run: ls .cache/ref-accession-catalog -la
+    - run: ls .cache/catalog -la
       shell: bash
 
     - name: Get isolates
-      run: virtool ref update -src src -cat .cache/ref-accession-catalog/catalog
+      run: virtool ref update -src src -cat .cache/catalog
          
       shell: bash
 

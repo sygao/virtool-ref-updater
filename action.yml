@@ -65,6 +65,8 @@ runs:
       run: |
         pwd
         ls -la
+        ls -la .cache
+        ls -la src
       shell: bash
 
     - name: Get isolates

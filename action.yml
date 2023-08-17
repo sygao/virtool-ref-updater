@@ -65,6 +65,7 @@ runs:
       run: |
         pwd
         ls -la
+      shell: bash
 
     - name: Get isolates
       run: virtool ref update -src src -cat .cache/catalog

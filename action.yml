@@ -60,9 +60,11 @@ runs:
         repository: ${{ inputs.catalog-repo }}
         token: ${{ inputs.catalog-token }}
         path: .cache
-    
-    - run: ls .cache/catalog -la
-      shell: bash
+
+    - name: Double check directory structure
+      run: |
+        pwd
+        ls -la
 
     - name: Get isolates
       run: virtool ref update -src src -cat .cache/catalog

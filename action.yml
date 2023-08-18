@@ -21,13 +21,22 @@ inputs:
     default: ''
 
   catalog-repo:
-      description: "'owner/repository_name' of the catalog"
-      required: true
-      default: 'sygao/ref-accession-catalog'
+    description: "'owner/repository_name' of the catalog"
+    required: true
+    default: 'sygao/ref-accession-catalog'
   catalog-token:
-      description: "Personal access token used to access the repository"
-      required: false
-      default: ''
+    description: "Personal access token used to access the repository"
+    required: false
+    default: ''
+
+  ncbi-email:
+    description: "Email to submit to NCBI. Decreases fetch cooldown."
+    required: false
+    default: ''
+  ncbi-api-key:
+    description: "NCBI API key. Decreases fetch cooldown."
+    required: false
+    default: ''
   
   create-new-branch:
     description: "Create a new branch and commit updates to it"
@@ -71,7 +80,9 @@ runs:
 
     - name: Get isolates
       run: virtool ref update reference -src src -cat .cache/catalog --debug
-         
+      env:
+        NCBI_EMAIL: ${{ inputs.ncbi-email }}
+        NCBI_API_KEY: ${{ inputs.ncbi-api-key }}
       shell: bash
 
     - uses: stefanzweifel/git-auto-commit-action@v4

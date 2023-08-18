@@ -80,9 +80,6 @@ runs:
 
     - name: Get isolates
       run: virtool ref update reference -src src -cat .cache/catalog --debug
-      env:
-        NCBI_EMAIL: ${{ inputs.ncbi-email }}
-        NCBI_API_KEY: ${{ inputs.ncbi-api-key }}
       shell: bash
 
     - uses: stefanzweifel/git-auto-commit-action@v4

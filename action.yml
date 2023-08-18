@@ -70,7 +70,7 @@ runs:
       shell: bash
 
     - name: Get isolates
-      run: virtool ref update -src src -cat .cache/catalog
+      run: virtool ref update reference -src src -cat .cache/catalog --debug
          
       shell: bash
 

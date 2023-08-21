@@ -88,6 +88,7 @@ runs:
 
     - run: echo flags='--debug' >> GITHUB_ENV
       if: ${{ inputs.debugging }}
+      shell: bash
 
     - name: Get isolates
       run: virtool ref update reference -src src -cat .cache/catalog ${{ env.flags }}

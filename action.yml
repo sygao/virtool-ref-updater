@@ -37,6 +37,11 @@ inputs:
     description: "NCBI API key. Decreases fetch cooldown."
     required: false
     default: ''
+
+  debugging:
+    description: "Debug flag. Determines verbosity of logs."
+    required: false
+    default: false
   
   create-new-branch:
     description: "Create a new branch and commit updates to it"
@@ -51,6 +56,9 @@ outputs:
   active-branch: 
     description: "Name of branch committed to"
     value: ${{ steps.branch-name.outputs.active_branch }}
+
+env:
+  flags: ''
 
 runs:
   using: "composite"
@@ -78,8 +86,11 @@ runs:
         ls -la src
       shell: bash
 
+    - run: echo flags='--debug' >> GITHUB_ENV
+      if: ${{ inputs.debugging }}
+
     - name: Get isolates
-      run: virtool ref update reference -src src -cat .cache/catalog --debug
+      run: virtool ref update reference -src src -cat .cache/catalog ${{ env.flags }}
       shell: bash
 
     - uses: stefanzweifel/git-auto-commit-action@v4

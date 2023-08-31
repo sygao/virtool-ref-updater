@@ -91,7 +91,9 @@ runs:
       shell: bash
 
     - name: Get isolates
-      run: virtool ref update reference -src src -cat .cache/catalog ${{ env.flags }}
+      run: |
+        virtool ref update reference -src src -cat .cache/catalog ${{ env.flags }}
+        rm GITHUB_ENV
       shell: bash
 
     - uses: stefanzweifel/git-auto-commit-action@v4

@@ -63,7 +63,10 @@ runs:
         id: get-branch-existence
         continue-on-error: true
         with:
-          route: GET /repos/${{ inputs.source-repo }}/branches/${{ inputs.new-branch-name }}
+          route: GET /repos/{slug}/branches/{branch}
+          owner: sygao-bot
+          slug: ${{ inputs.source-repo }}
+          branch: ${{ inputs.branchname }}
         env:
           GITHUB_TOKEN: ${{ inputs.source-token }}
     

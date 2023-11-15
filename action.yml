@@ -60,15 +60,15 @@ runs:
       shell: bash
 
     - uses: octokit/request-action@v2.x
-        id: get-branch-existence
-        continue-on-error: true
-        with:
-          route: GET /repos/{slug}/branches/{branch}
-          owner: sygao-bot
-          slug: ${{ inputs.source-repo }}
-          branch: ${{ inputs.branchname }}
-        env:
-          GITHUB_TOKEN: ${{ inputs.source-token }}
+      id: get-branch-existence
+      continue-on-error: true
+      with:
+        route: GET /repos/{slug}/branches/{branch}
+        owner: sygao-bot
+        slug: ${{ inputs.source-repo }}
+        branch: ${{ inputs.branchname }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.source-token }}
     
     - name: Abort if branch exists
       if: steps.get-branch-existence.outcome != 'failure'

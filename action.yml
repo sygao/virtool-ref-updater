@@ -39,7 +39,7 @@ inputs:
     default: ''
   
   new-branch-name:
-    description: "Give a name to a new branch"
+    description: "The name of the new branch"
     required: false
     default: 'new-accessions'
 
@@ -48,18 +48,17 @@ inputs:
     required: false
     default: false
 
-outputs:
-  active-branch: 
-    description: "Name of branch committed to"
-    value: ${{ steps.branch-name.outputs.active_branch }}
-
 env:
-  flags: ''
+  FLAGS: ''
 
 runs:
   using: "composite"
 
   steps:
+    - run: echo FLAGS='--debug' >> GITHUB_ENV
+        if: ${{ inputs.debugging }}
+        shell: bash
+        
     - name: Check out repo
       uses: actions/checkout@v4
       with:
@@ -74,39 +73,15 @@ runs:
         token: ${{ inputs.catalog-token }}
         path: .cache
 
-    - name: Double check directory structure
-      run: |
-        pwd
-        ls -la
-        ls -la .cache
-        ls -la src
-      shell: bash
-
-    - run: echo flags='--debug' >> GITHUB_ENV
-      if: ${{ inputs.debugging }}
-      shell: bash
-
     - name: Get updated data and update catalog
       run: |
-        virtool ref update reference -src src -cat .cache/catalog ${{ env.flags }}
-        virtool catalog update -src src -cat catalog ${{ env.flags }}
-        rm GITHUB_ENV
-      shell: bash
-    
-    - name: Set branch name
-      run: |
-        echo $branch_name
-        echo "BRANCH_NAME=$new_name" >> ${GITHUB_ENV}
-      env:
-        new_name: ${{ inputs.new-branch-name }}
+        virtool ref update reference -src src -cat .cache/catalog ${{ env.FLAGS }}
+        virtool catalog update -src src -cat catalog ${{ env.FLAGS }}
       shell: bash
 
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        branch: ${{ env.BRANCH_NAME }}
+        branch: ${{ inputs.new-branch-name }}
         create_branch: true
-        commit_message: Automated virtool-cli isolate retrieval on the database
-
-    - run: echo "active_branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
-      id: branch-name
-      shell: bash
+        file_pattern: '*.json'
+        commit_message: Auto-update from NCBI Nucleotide

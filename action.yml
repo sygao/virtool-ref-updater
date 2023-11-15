@@ -58,8 +58,27 @@ runs:
     - run: echo FLAGS='--debug' >> GITHUB_ENV
       if: ${{ inputs.debugging }}
       shell: bash
+
+    - uses: octokit/request-action@v2.x
+      id: get-branch-existence
+      continue-on-error: true
+      with:
+        route: GET /repos/{slug}/branches/{branch}
+        owner: sygao-bot
+        slug: ${{ inputs.source-repo }}
+        branch: ${{ inputs.branchname }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.source-token }}
+    
+    - name: Abort if branch exists
+      if: ${{ steps.get-branch-existence.outcome != 'failure' }}
+      run: gh run cancel
+      env:
+        GITHUB_TOKEN: ${{ inputs.source-token }}
+      shell: bash
         
     - name: Check out repo
+      if: ${{ steps.get-branch-existence.outcome == 'failure' }}
       uses: actions/checkout@v4
       with:
         repository: ${{ inputs.source-repo }}
@@ -68,12 +87,14 @@ runs:
 
     - name: Check out catalog
       uses: actions/checkout@v4
+      if: ${{ steps.get-branch-existence.outcome == 'failure' }}
       with:
         repository: ${{ inputs.catalog-repo }}
         token: ${{ inputs.catalog-token }}
         path: .cache
 
     - name: Get updated data and update catalog
+      if: ${{ steps.get-branch-existence.outcome == 'failure' }}
       run: |
         virtool ref update reference -src src -cat .cache/catalog ${{ env.FLAGS }}
         virtool catalog update -src src -cat catalog ${{ env.FLAGS }}
@@ -85,3 +106,4 @@ runs:
         create_branch: true
         file_pattern: '*.json'
         commit_message: Auto-update from NCBI Nucleotide
+      if: ${{ steps.get-branch-existence.outcome == 'failure' }}

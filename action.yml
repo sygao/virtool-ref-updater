@@ -86,9 +86,10 @@ runs:
       if: ${{ inputs.debugging }}
       shell: bash
 
-    - name: Get isolates
+    - name: Get updated data and update catalog
       run: |
         virtool ref update reference -src src -cat .cache/catalog ${{ env.flags }}
+        virtool catalog update -src src -cat catalog ${{ env.flags }}
         rm GITHUB_ENV
       shell: bash
     

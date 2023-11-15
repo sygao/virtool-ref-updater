@@ -37,20 +37,16 @@ inputs:
     description: "NCBI API key. Decreases fetch cooldown."
     required: false
     default: ''
-
-  debugging:
-    description: "Debug flag. Determines verbosity of logs."
-    required: false
-    default: false
   
-  create-new-branch:
-    description: "Create a new branch and commit updates to it"
-    required: false
-    default: false
   new-branch-name:
     description: "Give a name to a new branch"
     required: false
     default: 'new-accessions'
+
+  debugging:
+    description: "Debug flag. Determines verbosity of Virtool logs."
+    required: false
+    default: false
 
 outputs:
   active-branch: 
@@ -65,14 +61,14 @@ runs:
 
   steps:
     - name: Check out repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ${{ inputs.source-repo }}
         token: ${{ inputs.source-token }}
         ref: ${{ inputs.source-ref }}
 
     - name: Check out catalog
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ${{ inputs.catalog-repo }}
         token: ${{ inputs.catalog-token }}
@@ -95,23 +91,8 @@ runs:
         virtool ref update reference -src src -cat .cache/catalog ${{ env.flags }}
         rm GITHUB_ENV
       shell: bash
-
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: Automated virtool-cli isolate retrieval on the database
-      if: ${{ inputs.create-new-branch == 'false' }}
-    
-    - name: Set old branch name
-      if: ${{ inputs.create-new-branch == 'false' }}
-      run: |
-        echo $branch_name
-        echo "BRANCH_NAME=$ref" >> ${GITHUB_ENV}
-      env:
-        ref: ${{ inputs.source-ref }}
-      shell: bash
     
     - name: Set branch name
-      if: ${{ inputs.create-new-branch == 'true' }}
       run: |
         echo $branch_name
         echo "BRANCH_NAME=$new_name" >> ${GITHUB_ENV}
@@ -124,7 +105,6 @@ runs:
         branch: ${{ env.BRANCH_NAME }}
         create_branch: true
         commit_message: Automated virtool-cli isolate retrieval on the database
-      if: ${{ inputs.create-new-branch == 'true' }}
 
     - run: echo "active_branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
       id: branch-name

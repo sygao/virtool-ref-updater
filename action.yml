@@ -71,7 +71,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.source-token }}
     
     - name: Abort if branch exists
-      if: steps.get-branch-existence.outcome != 'failure'
+      if: ${{ steps.get-branch-existence.outcome != 'failure' }}
       run: exit 1
       shell: bash
         

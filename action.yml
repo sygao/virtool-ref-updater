@@ -56,8 +56,8 @@ runs:
 
   steps:
     - run: echo FLAGS='--debug' >> GITHUB_ENV
-        if: ${{ inputs.debugging }}
-        shell: bash
+      if: ${{ inputs.debugging }}
+      shell: bash
 
     - uses: octokit/request-action@v2.x
         id: get-branch-existence
